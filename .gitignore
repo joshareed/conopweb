@@ -1,0 +1,7 @@
+.DS_Store
+target
+stacktrace.log
+.project
+.classpath
+.settings
+.metadata
