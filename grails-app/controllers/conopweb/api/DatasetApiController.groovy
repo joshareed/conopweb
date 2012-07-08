@@ -6,7 +6,7 @@ class DatasetApiController {
 	def datasetService
 
 	def list() {
-		render datasetService.find(params ?: [:]) as JSON
+		render datasetService.find(params) as JSON
 	}
 
 	def create() {
@@ -18,7 +18,7 @@ class DatasetApiController {
 			}
 		} else {
 			try {
-				render datasetService.create(params ?: [:]) as JSON
+				render datasetService.create(params) as JSON
 			} catch (e) {
 				render(status: 400, text: e.message)
 			}
@@ -30,7 +30,7 @@ class DatasetApiController {
 		if (dataset) {
 			render dataset as JSON
 		} else {
-			render(status: 404, text: "Dataset not found")
+			render(status: 404, text: "Dataset '$id' does not exist")
 		}
 	}
 }

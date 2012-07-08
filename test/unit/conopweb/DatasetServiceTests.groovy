@@ -11,6 +11,7 @@ class DatasetServiceTests {
 	void setup() {
 		mongoService = new MongoService('localhost', 'conopweb_test')
 		service.mongoService = mongoService
+		service.collection.remove([:])
 	}
 
 	@After
@@ -48,15 +49,15 @@ class DatasetServiceTests {
 	}
 
 	void testCreate() {
-		thrown(RuntimeException, "'id' is required") {
+		thrown(RuntimeException, "Property 'id' is required") {
 			service.create()
 		}
 
-		thrown(RuntimeException, "'name' is required") {
+		thrown(RuntimeException, "Property 'name' is required") {
 			service.create(id: 'test')
 		}
 
-		thrown(RuntimeException, "'url' is required") {
+		thrown(RuntimeException, "Property 'url' is required") {
 			service.create(id: 'test', name: 'Test Dataset')
 		}
 
@@ -66,7 +67,7 @@ class DatasetServiceTests {
 		assert 'http://example.com' == dataset.url
 		assert 'test' == dataset.id
 
-		thrown(RuntimeException, "id 'test' already exists") {
+		thrown(RuntimeException, "Id 'test' already exists") {
 			service.create(id: 'test', name: 'Test Dataset', url: 'http://example.com')
 		}
 	}

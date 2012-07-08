@@ -15,6 +15,7 @@ class DatasetApiControllerTests {
 
 		datasetService = new DatasetService()
 		datasetService.mongoService = mongoService
+		datasetService.collection.remove([:])
 
 		controller.datasetService = datasetService
 	}
@@ -26,46 +27,46 @@ class DatasetApiControllerTests {
 
 	void testList() {
 		controller.list()
-		assert '[]' == response.contentAsString
+		assert '[]' == response.contentAsString.toString()
 
 		datasetService.collection.add(name: 'Test Dataset', url: 'http://example.com', id: 'test')
 
 		response.reset()
 		controller.list()
 
-		assert '[{"name":"Test Dataset","url":"http://example.com","id":"test"}]' == response.contentAsString
+		assert '[{"name":"Test Dataset","url":"http://example.com","id":"test"}]' == response.contentAsString.toString()
 	}
 
 	void testShow() {
 		controller.show()
 		assert 404 == response.status
-		assert 'Dataset not found' == response.contentAsString
+		assert "Dataset 'null' does not exist" == response.contentAsString.toString()
 
 		response.reset()
 
 		controller.params.id = 'test'
 		controller.show()
 		assert 404 == response.status
-		assert 'Dataset not found' == response.contentAsString
+		assert "Dataset 'test' does not exist" == response.contentAsString.toString()
 
 		response.reset()
 
 		datasetService.collection.add(name: 'Test Dataset', url: 'http://example.com', id: 'test')
 		controller.params.id = 'test'
 		controller.show()
-		assert '{"name":"Test Dataset","url":"http://example.com","id":"test"}' == response.contentAsString
+		assert '{"name":"Test Dataset","url":"http://example.com","id":"test"}' == response.contentAsString.toString()
 	}
 
 	void testCreate() {
 		controller.create()
 		assert 400 == response.status
-		assert "'id' is required" == response.contentAsString
+		assert "Property 'id' is required" == response.contentAsString.toString()
 
 		response.reset()
 
 		controller.params.putAll(name: 'Test Dataset', url: 'http://example.com', id: 'test')
 		controller.create()
-		assert '{"id":"test","name":"Test Dataset","url":"http://example.com"}' == response.contentAsString
+		assert '{"id":"test","name":"Test Dataset","url":"http://example.com"}' == response.contentAsString.toString()
 	}
 
 	void testCreateWithJSON() {
@@ -73,7 +74,7 @@ class DatasetApiControllerTests {
 		controller.request.content = '{"id":"test","name":"Test Dataset","url":"http://example.com"}'.getBytes()
 
 		controller.create()
-		assert '{"id":"test","name":"Test Dataset","url":"http://example.com"}' == response.contentAsString
+		assert '{"id":"test","name":"Test Dataset","url":"http://example.com"}' == response.contentAsString.toString()
 
 		response.reset()
 
@@ -82,7 +83,6 @@ class DatasetApiControllerTests {
 
 		controller.create()
 		assert 400 == response.status
-		assert "Invalid JSON" == response.contentAsString
+		assert "Invalid JSON" == response.contentAsString.toString()
 	}
-
 }

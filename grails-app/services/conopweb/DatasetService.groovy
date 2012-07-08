@@ -26,15 +26,15 @@ class DatasetService {
 	def create(Map params = [:]) {
 		// check for required parameters
 		['id', 'name', 'url'].each { key ->
-			if (!params[key]) {
-				throw new RuntimeException("'$key' is required")
+			if (params[key] == null || params[key] == '') {
+				throw new RuntimeException("Property '$key' is required")
 			}
 		}
 
 		// check that id is unique
 		def existing = get(params.id)
 		if (existing) {
-			throw new RuntimeException("id '${params.id}' already exists")
+			throw new RuntimeException("Id '${params.id}' already exists")
 		}
 
 		// create the dataset
