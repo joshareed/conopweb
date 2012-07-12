@@ -29,7 +29,7 @@ class RunServiceTests {
 	void testFind() {
 		assert [] == service.find()
 
-		service.collection.add(id: 'test', name: 'Test Run', dataset: 'dataset', simulation: [:], solution: [])
+		service.collection.add(id: 'test', name: 'Test Run', dataset: 'dataset', simulation: [:])
 
 		def list = service.find()
 		assert list
@@ -40,7 +40,6 @@ class RunServiceTests {
 		assert 'Test Run' == run.name
 		assert 'dataset' == run.dataset
 		assert [:] == run.simulation
-		assert [] == run.solution
 	}
 
 	void testGet() {
@@ -48,15 +47,14 @@ class RunServiceTests {
 		assert null == service.get('')
 		assert null == service.get('test')
 
-		service.collection.add(id: 'test', name: 'Test Run', dataset: 'dataset', simulation: [:], solution: [])
+		service.collection.add(id: 'test', name: 'Test Run', dataset: 'dataset', simulation: [:])
 
-		def run = service.get('test')
+		def run = service.get('Test')
 		assert run
 		assert 'test' == run.id
 		assert 'Test Run' == run.name
 		assert 'dataset' == run.dataset
 		assert [:] == run.simulation
-		assert [] == run.solution
 	}
 
 	void testCreate() {
@@ -88,7 +86,6 @@ class RunServiceTests {
 		assert 'Test Run' == run.name
 		assert 'test-dataset' == run.dataset
 		assert [:] == run.simulation
-		assert [] == run.solution
 
 		thrown(RuntimeException, "Id 'test' already exists") {
 			service.create(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:])

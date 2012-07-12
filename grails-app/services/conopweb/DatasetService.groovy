@@ -16,7 +16,7 @@ class DatasetService {
 	def get(String id) {
 		if (!id) { return null }
 
-		def dataset = collection.find(id: id)
+		def dataset = collection.find(id: id.toLowerCase())
 		if (dataset) {
 			dataset.remove('_id')
 		}
@@ -38,7 +38,7 @@ class DatasetService {
 		}
 
 		// create the dataset
-		def dataset = collection.add(id: params.id, name: params.name, url: params.url)
+		def dataset = collection.add(id: params.id.toLowerCase(), name: params.name, url: params.url)
 		if (dataset) {
 			dataset.remove('_id')
 		}

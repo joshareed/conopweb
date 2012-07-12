@@ -21,7 +21,7 @@ class RunService {
 	def get(String id) {
 		if (!id) { return null }
 
-		def run = collection.find(id: id)
+		def run = collection.find(id: id.toLowerCase())
 		if (run) {
 			run.remove('_id')
 		}
@@ -49,7 +49,7 @@ class RunService {
 		}
 
 		// create the run
-		def run = collection.add(id: params.id, name: params.name, dataset: params.dataset, simulation: params.simulation, solution: [])
+		def run = collection.add(id: params.id.toLowerCase(), name: params.name, dataset: params.dataset, simulation: params.simulation)
 		if (run) {
 			run.remove('_id')
 		}
@@ -73,14 +73,15 @@ class RunService {
 		}
 
 		// check for required parameters
-		['time', 'temp', 'score'].each { key ->
+		['time', 'iteration', 'temp', 'score', 'objective'].each { key ->
 			if (params[key] == null || params[key] == '') {
 				throw new RuntimeException("Property '$key' is required")
 			}
 		}
 
 		// create the progress
-		def progress = progressCollection.add(run: id, dataset: run.dataset, time: (params.time as long), temp: (params.temp as double), score: (params.score as double))
+		def progress = progressCollection.add(run: id, dataset: run.dataset, time: (params.time as int), temp: (params.temp as double),
+			score: (params.score as double), objective: params.objective, iteration: (params.iteration as long))
 		if (progress) {
 			progress.remove('_id')
 		}

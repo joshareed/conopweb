@@ -36,12 +36,12 @@ class RunApiControllerTests {
 		controller.list()
 		assert '[]' == response.contentAsString
 
-		runService.collection.add(id: 'test', name: 'Test Run', dataset: 'dataset', simulation: [:], solution: [])
+		runService.collection.add(id: 'test', name: 'Test Run', dataset: 'dataset', simulation: [:])
 
 		response.reset()
 		controller.list()
 
-		assert '[{"id":"test","name":"Test Run","dataset":"dataset","simulation":{},"solution":[]}]' == response.contentAsString.toString()
+		assert '[{"id":"test","name":"Test Run","dataset":"dataset","simulation":{}}]' == response.contentAsString.toString()
 	}
 
 	void testCreate() {
@@ -51,7 +51,7 @@ class RunApiControllerTests {
 
 		response.reset()
 
-		controller.params.putAll(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:], solution: [])
+		controller.params.putAll(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:])
 		controller.create()
 		assert 400 == response.status
 		assert "Dataset 'test-dataset' does not exist"
@@ -59,9 +59,9 @@ class RunApiControllerTests {
 		response.reset()
 
 		datasetService.create(id: 'test-dataset', name: 'Test Dataset', url: 'http://example.com')
-		controller.params.putAll(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:], solution: [])
+		controller.params.putAll(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:])
 		controller.create()
-		assert '{"id":"test","name":"Test Run","dataset":"test-dataset","simulation":{},"solution":[]}' == response.contentAsString.toString()
+		assert '{"id":"test","name":"Test Run","dataset":"test-dataset","simulation":{}}' == response.contentAsString.toString()
 	}
 
 	void testShow() {
@@ -79,11 +79,11 @@ class RunApiControllerTests {
 		response.reset()
 
 		datasetService.create(id: 'test-dataset', name: 'Test Dataset', url: 'http://example.com')
-		runService.create(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:], solution: [])
+		runService.create(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:])
 
 		controller.params.id = 'test'
 		controller.show()
-		assert '{"id":"test","name":"Test Run","dataset":"test-dataset","simulation":{},"solution":[]}' == response.contentAsString.toString()
+		assert '{"id":"test","name":"Test Run","dataset":"test-dataset","simulation":{}}' == response.contentAsString.toString()
 	}
 
 	void testListProgress() {
@@ -94,7 +94,7 @@ class RunApiControllerTests {
 		response.reset()
 
 		datasetService.create(id: 'test-dataset', name: 'Test Dataset', url: 'http://example.com')
-		runService.create(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:], solution: [])
+		runService.create(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:])
 		controller.params.id = 'test'
 		controller.listProgress()
 		assert '[]' == response.contentAsString.toString()
@@ -109,7 +109,7 @@ class RunApiControllerTests {
 		response.reset()
 
 		datasetService.create(id: 'test-dataset', name: 'Test Dataset', url: 'http://example.com')
-		runService.create(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:], solution: [])
+		runService.create(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:])
 		controller.params.putAll(time: '1', temp: '10.56', score: '12345.67')
 		controller.createProgress()
 

@@ -41,7 +41,7 @@ class DatasetServiceTests {
 
 		service.collection.add(name: 'Test Dataset', url: 'http://example.com', id: 'test')
 
-		def dataset = service.get('test')
+		def dataset = service.get('Test')
 		assert dataset
 		assert 'Test Dataset' == dataset.name
 		assert 'http://example.com' == dataset.url
