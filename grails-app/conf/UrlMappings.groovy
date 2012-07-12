@@ -1,26 +1,35 @@
 class UrlMappings {
 
 	static mappings = {
-		"/api/1/datasets" {
+		"/api/datasets" {
 			controller = "datasetApi"
 			action = [GET: 'list', POST: 'create', PUT: 'create']
 		}
-		"/api/1/datasets/$id" {
+		"/api/datasets/$id" {
 			controller = "datasetApi"
 			action = "show"
 		}
-		"/api/1/runs" {
+		"/api/runs" {
 			controller = "runApi"
 			action = [GET: 'list', POST: 'create', PUT: 'create']
 		}
-		"/api/1/runs/$id" {
+		"/api/runs/$id" {
 			controller = "runApi"
 			action = "show"
 		}
-		"/api/1/runs/$id/progress" {
+		"/api/runs/$id/progress" {
 			controller = "runApi"
 			action = [GET: 'listProgress', POST: 'createProgress', PUT: 'createProgress']
 		}
+		"/api/runs/$id/solution" {
+			controller = "runApi"
+			action = [GET: 'getSolution', POST: 'createSolution', PUT: 'createSolution']
+		}
+		"/datasets"(controller: 'dataset', action: 'list')
+		"/datasets/$id"(controller: 'dataset', action: 'show')
+		"/runs"(controller: 'run', action: 'list')
+		"/runs/$id"(controller: 'run', action: 'show')
+
 
 		"/"(view:"/index")
 		"500"(view:'/error')

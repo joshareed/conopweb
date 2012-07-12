@@ -31,5 +31,8 @@ grails.project.dependency.resolution = {
         runtime ":jquery:1.7.1"
         runtime ":resources:1.1.6"
         build ":tomcat:$grailsVersion"
+
+		compile ":twitter-bootstrap:2.0.2.25"
+		//compile ":dustjs-resources:0.2"
     }
 }
