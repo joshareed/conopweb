@@ -126,21 +126,31 @@ class RunServiceTests {
 			service.createProgress('test')
 		}
 
-		thrown(RuntimeException, "Property 'temp' is required") {
+		thrown(RuntimeException, "Property 'iteration' is required") {
 			service.createProgress('test', [time: 1])
 		}
 
-		thrown(RuntimeException, "Property 'score' is required") {
-			service.createProgress('test', [time: 1, temp: 10.5])
+		thrown(RuntimeException, "Property 'temp' is required") {
+			service.createProgress('test', [time: 1, iteration: 10000])
 		}
 
-		def progress = service.createProgress('test', [time: 1, temp: 10.5, score: 12345.67])
+		thrown(RuntimeException, "Property 'score' is required") {
+			service.createProgress('test', [time: 1, temp: 10.5, iteration: 100000])
+		}
+
+		thrown(RuntimeException, "Property 'objective' is required") {
+			service.createProgress('test', [time: 1, temp: 10.5, score: 12345.67, iteration: 10000])
+		}
+
+		def progress = service.createProgress('test', [time: 1, temp: 10.5, score: 12345.67, iteration: 10000, objective: 'matrix'])
 		assert progress
 		assert 'test' == progress.run
 		assert 'test-dataset' == progress.dataset
 		assert 1 == progress.time
 		assert 10.5 == progress.temp
 		assert 12345.67 == progress.score
+		assert 10000 == progress.iteration
+		assert 'matrix' == progress.objective
 	}
 
 	private thrown(clazz, msg, closure) {

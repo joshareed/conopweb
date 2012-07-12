@@ -110,9 +110,9 @@ class RunApiControllerTests {
 
 		datasetService.create(id: 'test-dataset', name: 'Test Dataset', url: 'http://example.com')
 		runService.create(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:])
-		controller.params.putAll(time: '1', temp: '10.56', score: '12345.67')
+		controller.params.putAll(time: '1', temp: '10.56', score: '12345.67', iteration: '10000', objective: 'matrix')
 		controller.createProgress()
 
-		assert '{"run":"test","dataset":"test-dataset","time":1,"temp":10.56,"score":12345.67}' == response.contentAsString.toString()
+		assert '{"run":"test","dataset":"test-dataset","time":1,"temp":10.56,"score":12345.67,"objective":"matrix","iteration":10000}' == response.contentAsString.toString()
 	}
 }
