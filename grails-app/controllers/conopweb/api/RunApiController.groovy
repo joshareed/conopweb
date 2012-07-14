@@ -66,4 +66,40 @@ class RunApiController {
 			}
 		}
 	}
+
+	def getSolution(String id) {
+		// check the run
+		def run = runService.get(id)
+		if (!run) {
+			render(status: 404, text: "Run '$id' does not exist")
+			return
+		}
+
+		def solution = run.solution ?: [:]
+		render solution as JSON
+	}
+
+	def createSolution(String id) {
+		// check the run
+		def run = runService.get(id)
+		if (!run) {
+			render(status: 404, text: "Run '$id' does not exist")
+			return
+		}
+
+		// create the solution
+		if (request.contentLength > 0) {
+			try {
+				render runService.createSolution(id, request.JSON) as JSON
+			} catch (e) {
+				render(status: 400, text: 'Invalid JSON')
+			}
+		} else {
+			try {
+				render runService.createSolution(id, params) as JSON
+			} catch (e) {
+				render(status: 400, text: e.message)
+			}
+		}
+	}
 }

@@ -22,7 +22,7 @@ class MongoService {
 				delegate.insert(dbo)
 				dbo
 			}
-			update << { LinkedHashMap q, BasicDBObject op -> delegate.update(q as BasicDBObject, op) }
+			update << { LinkedHashMap q, LinkedHashMap op -> delegate.update(q as BasicDBObject, op as BasicDBObject) }
 			remove << { LinkedHashMap query -> delegate.remove(query as BasicDBObject) }
 		}
 

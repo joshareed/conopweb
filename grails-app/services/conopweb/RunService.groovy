@@ -15,7 +15,29 @@ class RunService {
 	}
 
     def find(Map params = [:]) {
-		collection.findAll([:]).collect { it.remove('_id'); it }
+		// figure out sort
+		def sort = [:]
+		if (params.sort) {
+			def s = params.remove('sort')
+			if (s.startsWith('-')) {
+				sort[s.substring(1)] = -1
+			} else {
+				sort[s] = 1
+			}
+		} else {
+			sort = ['created' : 1]
+		}
+
+		// figure out limit
+		int limit = 0
+		if (params.limit) {
+			limit = params.remove('limit') as int
+		}
+
+		def query = [:]
+		query.putAll(params)
+
+		collection.findAll(query).sort(sort).limit(limit).collect { it.remove('_id'); it }
     }
 
 	def get(String id) {
@@ -49,7 +71,7 @@ class RunService {
 		}
 
 		// create the run
-		def run = collection.add(id: params.id.toLowerCase(), name: params.name, dataset: params.dataset, simulation: params.simulation)
+		def run = collection.add(id: params.id.toLowerCase(), name: params.name, dataset: dataset.id, simulation: params.simulation, created: new Date(), status: 'new')
 		if (run) {
 			run.remove('_id')
 		}
@@ -85,6 +107,37 @@ class RunService {
 		if (progress) {
 			progress.remove('_id')
 		}
+
+		// update the run
+		collection.update([id: run.id], ['$set': [score: progress.score, status: 'active']])
+		if (params.solution && !params.solution.score) {
+			collection.update([id: run.id], ['$set': [solution: params.solution]])
+		}
+
 		progress
+	}
+
+	def getSolution(String id, Map params = [:]) {
+		// make sure run exists
+		def run = get(id)
+		if (!run) {
+			throw new RuntimeException("Run '${id}' does not exist")
+		}
+
+		return run?.solution;
+	}
+
+	def createSolution(String id, Map params = [:]) {
+		// make sure run exists
+		def run = get(id)
+		if (!run) {
+			throw new RuntimeException("Run '${id}' does not exist")
+		}
+
+		if (params.score) {
+			collection.update([id: run.id], ['$set': [solution: params, status: 'complete']])
+		} else {
+			collection.update([id: run.id], ['$set': [solution: null, status: 'aborted']])
+		}
 	}
 }

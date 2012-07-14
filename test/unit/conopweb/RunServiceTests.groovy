@@ -86,6 +86,8 @@ class RunServiceTests {
 		assert 'Test Run' == run.name
 		assert 'test-dataset' == run.dataset
 		assert [:] == run.simulation
+		assert 'new' == run.status
+		assert run.created
 
 		thrown(RuntimeException, "Id 'test' already exists") {
 			service.create(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:])
@@ -151,6 +153,10 @@ class RunServiceTests {
 		assert 12345.67 == progress.score
 		assert 10000 == progress.iteration
 		assert 'matrix' == progress.objective
+
+		def run = service.get('test')
+		assert 'active' == run.status
+		assert 12345.67 == run.score
 	}
 
 	private thrown(clazz, msg, closure) {

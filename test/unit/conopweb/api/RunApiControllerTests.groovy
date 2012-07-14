@@ -5,6 +5,8 @@ import conopweb.*
 import grails.test.mixin.*
 import org.junit.*
 
+import grails.converters.JSON
+
 @TestFor(RunApiController)
 class RunApiControllerTests {
 	def mongoService, runService, datasetService
@@ -61,7 +63,15 @@ class RunApiControllerTests {
 		datasetService.create(id: 'test-dataset', name: 'Test Dataset', url: 'http://example.com')
 		controller.params.putAll(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:])
 		controller.create()
-		assert '{"id":"test","name":"Test Run","dataset":"test-dataset","simulation":{}}' == response.contentAsString.toString()
+		def out = response.contentAsString.toString()
+		assert out.startsWith('{')
+		assert out.endsWith('}')
+		assert out.contains('"id":"test"')
+		assert out.contains('"name":"Test Run"')
+		assert out.contains('"dataset":"test-dataset"')
+		assert out.contains('"simulation":{}')
+		assert out.contains('"status":"new"')
+		assert out.contains('"created":')
 	}
 
 	void testShow() {
@@ -83,7 +93,15 @@ class RunApiControllerTests {
 
 		controller.params.id = 'test'
 		controller.show()
-		assert '{"id":"test","name":"Test Run","dataset":"test-dataset","simulation":{}}' == response.contentAsString.toString()
+		def out = response.contentAsString.toString()
+		assert out.startsWith('{')
+		assert out.endsWith('}')
+		assert out.contains('"id":"test"')
+		assert out.contains('"name":"Test Run"')
+		assert out.contains('"dataset":"test-dataset"')
+		assert out.contains('"simulation":{}')
+		assert out.contains('"status":"new"')
+		assert out.contains('"created":')
 	}
 
 	void testListProgress() {
