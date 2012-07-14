@@ -3,7 +3,7 @@ package conopweb
 class DatasetController {
 	static defaultAction = 'list'
 
-	def datasetService
+	def datasetService, runService
 
     def list() {
 		[datasets: datasetService.find(params)]
@@ -14,7 +14,11 @@ class DatasetController {
 		if (!dataset) {
 			render(status: 404, text: "Dataset '$id' does not exist")
 		} else {
-			[dataset: dataset]
+			[
+				dataset: dataset,
+				recent: runService.find(dataset: dataset.id, sort: '-created', limit: 5),
+				best: runService.find(dataset: dataset.id, sort: 'score', limit: 5)
+			]
 		}
 	}
 }
