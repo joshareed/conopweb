@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
         <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
 		<r:require modules="bootstrap-responsive-css,bootstrap-js"/>
+		<g:javascript library="application"/>
         <r:layoutResources />
         <g:layoutHead/>
 	</head>
