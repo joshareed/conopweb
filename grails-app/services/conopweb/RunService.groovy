@@ -84,7 +84,7 @@ class RunService {
 			return null
 		}
 
-		progressCollection.findAll(run: id).collect { it.remove('_id'); it }
+		progressCollection.findAll(run: run.id).sort(time: 1).collect { it.remove('_id'); it }
 	}
 
 	def createProgress(String id, Map params = [:]) {
@@ -102,7 +102,7 @@ class RunService {
 		}
 
 		// create the progress
-		def progress = progressCollection.add(run: id, dataset: run.dataset, time: (params.time as int), temp: (params.temp as double),
+		def progress = progressCollection.add(run: run.id, dataset: run.dataset, time: (params.time as int), temp: (params.temp as double),
 			score: (params.score as double), objective: params.objective, iteration: (params.iteration as long))
 		if (progress) {
 			progress.remove('_id')

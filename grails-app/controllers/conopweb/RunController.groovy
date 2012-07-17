@@ -6,7 +6,7 @@ class RunController {
 	def runService
 
 	def list() {
-		[runs: runService.find(params)]
+		[runs: runService.find([:])]
 	}
 
 	def show(String id) {
