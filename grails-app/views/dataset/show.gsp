@@ -27,32 +27,112 @@
 	<g:if test="${dataset.description}">
 		<p style="margin-bottom: 30px">${dataset.description}</p>
 	</g:if>
-	<div class="hero-unit">
-		<h1>Graph</h1>
+	<div class="hero-unit" id="chart" style="display: none">
 	</div>
 	<div class="row">
-		<div class="span6">
-			<h2>Recent Runs</h2>
-			<ol>
-				<g:each in="${recent}" var="run">
-					<li><span class="label run-score">${run?.score ? run.score as int : '...'}</span><g:link controller="run" action="show" id="${run.id}">${run.name}</g:link></li>
-				</g:each>
-				<g:if test="${!recent}">
-					<li><em>No runs</em></li>
-				</g:if>
-			</ol>
-		</div>
 		<div class="span6">
 			<h2>Top Runs</h2>
 			<ol>
 				<g:each in="${best}" var="run">
-					<li><span class="label run-score">${run?.score ? run.score as int : '...'}</span><g:link controller="run" action="show" id="${run.id}">${run.name}</g:link></li>
+					<li><g:render template="/run-brief" model="[run: run]"/></li>
 				</g:each>
 				<g:if test="${!best}">
 					<li><em>No runs</em></li>
 				</g:if>
 			</ol>
 		</div>
+		<div class="span6">
+			<h2>Recent Runs</h2>
+			<ol>
+				<g:each in="${recent}" var="run">
+					<li><g:render template="/run-brief" model="[run: run]"/></li>
+				</g:each>
+				<g:if test="${!recent}">
+					<li><em>No runs</em></li>
+				</g:if>
+			</ol>
+		</div>
 	</div>
+	<script type="text/javascript" charset="utf-8">
+	var chart;
+	$(document).ready(function() {
+		var options = {
+			chart: {
+				renderTo: 'chart',
+				type: 'spline',
+				width: 1050,
+				style: {
+					margin: '0 auto'
+				},
+				zoomType: 'x'
+			},
+			title: {
+				text: 'Top Runs'
+			},
+			credits: {
+				enabled: false
+			},
+			xAxis: {
+				reversed: false,
+				title: {
+					enabled: true,
+					text: 'Time (hours)'
+				},
+				labels: {
+					formatter: function() {
+						return this.value;
+					}
+				},
+				maxPadding: 0.05,
+				showLastLabel: true
+			},
+			yAxis: {
+				type: 'logarithmic',
+				title: {
+					text: 'Score'
+				},
+				labels: {
+					formatter: function() {
+						return this.value;
+					}
+				},
+				lineWidth: 2
+			},
+			legend: {
+				enabled: true
+			},
+			tooltip: {
+				formatter: function() {
+					return '' + this.x + ': ' + this.y + '';
+				}
+			},
+			plotOptions: {
+				spline: {
+					marker: {
+						enabled: false
+					}
+				}
+			},
+			series: []
+		};
+		chart = new Highcharts.Chart(options);
+
+		<g:each in="${best}" var="run">
+			$.getJSON('../api/runs/${run.id}/progress', function(data) {
+				var series = {
+					name: '${run.name}',
+					data: []
+				};
+				$.each(data, function(i, e) {
+					if (e.time >= 3600) {
+						series.data.push([e.time / 60 / 60, e.score]);
+					}
+				});
+				chart.addSeries(series);
+				$('#chart').show();
+			});
+		</g:each>
+	});
+	</script>
 </body>
 </html>
