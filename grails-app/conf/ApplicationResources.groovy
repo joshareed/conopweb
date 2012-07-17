@@ -1,5 +1,5 @@
 modules = {
     application {
-        resource url:'js/application.js'
+        resource url:'js/highcharts.js', disposition: 'head'
     }
 }
