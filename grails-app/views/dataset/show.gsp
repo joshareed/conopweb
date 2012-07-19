@@ -1,3 +1,4 @@
+<%@ page import="grails.converters.JSON" %>
 <html>
 <head>
 	<meta name="layout" content="main"/>
@@ -21,17 +22,18 @@
 </head>
 <body>
 	<g:link url="${dataset.url}" class="pull-right" style="margin-top: 15px">
-		<i class="icon-share"></i> More Info
+		<i class="icon-share"></i> Download
 	</g:link>
 	<h1 style="margin-bottom: 10px">${dataset.name}</h1>
 	<g:if test="${dataset.description}">
 		<p style="margin-bottom: 30px">${dataset.description}</p>
 	</g:if>
-	<div class="hero-unit" id="chart" style="display: none"></div>
+	<div class="hero-unit" id="chart"></div>
 	<div class="row">
 		<div class="span6">
 			<h2>Top Runs</h2>
 			<ol>
+				<g:set var="best" value="${runs.sort{it.score}.collate(5)[0]}"/>
 				<g:each in="${best}" var="run">
 					<li><g:render template="/run-brief" model="[run: run]"/></li>
 				</g:each>
@@ -43,6 +45,7 @@
 		<div class="span6">
 			<h2>Recent Runs</h2>
 			<ol>
+				<g:set var="recent" value="${runs.sort{it.created}.collate(5)[0]}"/>
 				<g:each in="${recent}" var="run">
 					<li><g:render template="/run-brief" model="[run: run]"/></li>
 				</g:each>
@@ -55,80 +58,51 @@
 	<script type="text/javascript" charset="utf-8">
 	var chart;
 	$(document).ready(function() {
-		var options = {
+		chart = new Highcharts.Chart({
 			chart: {
 				renderTo: 'chart',
-				type: 'spline',
+				type: 'scatter',
 				width: 1050,
 				style: {
 					margin: '0 auto'
 				},
-				zoomType: 'x'
 			},
 			title: {
-				text: 'Top Runs'
+				text: 'Runs'
 			},
 			credits: {
 				enabled: false
 			},
 			xAxis: {
-				reversed: false,
 				title: {
 					enabled: true,
 					text: 'Time (hours)'
-				},
-				labels: {
-					formatter: function() {
-						return this.value;
-					}
-				},
-				maxPadding: 0.05,
-				showLastLabel: true
+				}
 			},
 			yAxis: {
-				type: 'logarithmic',
 				title: {
+					enabled: true,
 					text: 'Score'
-				},
-				labels: {
-					formatter: function() {
-						return this.value;
-					}
-				},
-				lineWidth: 2
+				}
 			},
 			legend: {
 				enabled: true
 			},
-			tooltip: {
-				formatter: function() {
-					return '' + this.x + ': ' + this.y + '';
-				}
-			},
-			plotOptions: {
-				spline: {
-					marker: {
-						enabled: false
-					}
-				}
-			},
-			series: []
-		};
-		chart = new Highcharts.Chart(options);
-
-		<g:each in="${best}" var="run">
-			$.getJSON('../api/runs/${run.id}/progress', function(data) {
-				var series = {
-					name: '${run.name}',
-					data: []
-				};
-				$.each(data, function(i, e) {
-					series.data.push([e.time / 60 / 60, e.score]);
-				});
-				chart.addSeries(series);
-				$('#chart').show();
-			});
-		</g:each>
+<%
+def grouped = runs.groupBy { it.simulation.objective }
+series = []
+grouped.each { k, v ->
+	series << [
+		name: k,
+		data: v.collect { [
+			g.formatNumber(format: '#.00', number: (it.elapsed / 3600)) as double, 
+			g.formatNumber(format: '#.00', number: (it.score)) as double]
+		}
+	]
+}
+%>
+			series: ${series as JSON}
+		});
 	});
 	</script>
 </body>

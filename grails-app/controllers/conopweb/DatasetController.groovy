@@ -16,8 +16,7 @@ class DatasetController {
 		} else {
 			[
 				dataset: dataset,
-				recent: runService.find(dataset: dataset.id, sort: '-created', limit: 5),
-				best: runService.find(dataset: dataset.id, sort: 'score', limit: 5)
+				runs: runService.find(dataset: dataset.id, sort: 'score')
 			]
 		}
 	}
