@@ -5,11 +5,12 @@
 		<title>CONOP.io</title>
 	</head>
 	<body>
-		<div class="hero-unit">
-			<h1>Hero Unit</h1>
-			<p>
-				What should go here? Running now? Cool Graphs?
-			</p>
-		</div>
+		Events:
+		<ul>
+			<li>Run started!</li>
+			<li>Run completed</li>
+			<li>New best score found for run</li>
+			<li>Dataset added</li>
+		</ul>
 	</body>
 </html>
