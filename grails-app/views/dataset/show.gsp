@@ -27,8 +27,7 @@
 	<g:if test="${dataset.description}">
 		<p style="margin-bottom: 30px">${dataset.description}</p>
 	</g:if>
-	<div class="hero-unit" id="chart" style="display: none">
-	</div>
+	<div class="hero-unit" id="chart" style="display: none"></div>
 	<div class="row">
 		<div class="span6">
 			<h2>Top Runs</h2>
@@ -124,9 +123,7 @@
 					data: []
 				};
 				$.each(data, function(i, e) {
-					if (e.time >= 3600) {
-						series.data.push([e.time / 60 / 60, e.score]);
-					}
+					series.data.push([e.time / 60 / 60, e.score]);
 				});
 				chart.addSeries(series);
 				$('#chart').show();

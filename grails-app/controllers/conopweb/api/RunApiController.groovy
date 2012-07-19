@@ -35,7 +35,7 @@ class RunApiController {
 	}
 
 	def listProgress(String id) {
-		def progress = runService.getProgress(id, params)
+		def progress = runService.getProgress(id, [:])
 		if (progress == null) {
 			render(status: 404, text: "Run '$id' does not exist")
 		} else {

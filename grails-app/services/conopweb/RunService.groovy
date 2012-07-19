@@ -84,7 +84,10 @@ class RunService {
 			return null
 		}
 
-		progressCollection.findAll(run: run.id).sort(time: 1).collect { it.remove('_id'); it }
+		def query = [run: run.id]
+		query.putAll(params)
+
+		progressCollection.findAll(query).sort(time: 1).collect { it.remove('_id'); it }
 	}
 
 	def createProgress(String id, Map params = [:]) {
@@ -109,7 +112,7 @@ class RunService {
 		}
 
 		// update the run
-		collection.update([id: run.id], ['$set': [score: progress.score, status: 'active']])
+		collection.update([id: run.id], ['$set': [score: progress.score, status: 'active', elapsed: progress.time]])
 		if (params.solution && !params.solution.score) {
 			collection.update([id: run.id], ['$set': [solution: params.solution]])
 		}
