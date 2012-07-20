@@ -30,7 +30,6 @@ class UrlMappings {
 		"/runs"(controller: 'run', action: 'list')
 		"/runs/$id"(controller: 'run', action: 'show')
 
-
 		"/"(view:"/index")
 		"500"(view:'/error')
 	}

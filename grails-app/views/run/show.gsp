@@ -14,7 +14,7 @@
 </head>
 <body>
 	<h1 style="margin-bottom: 10px">${run.name}</h1>
-	<div class="hero-unit" id="chart" style="display: none"></div>
+	<div class="hero-unit" id="chart"></div>
 	<div class="row">
 		<div class="span6">
 			<h3>Status: ${run.status}</h3>
@@ -142,7 +142,6 @@
 				series.data.push([e.time / 60 / 60, e.score]);
 			});
 			chart.addSeries(series);
-			$('#chart').show();
 		});
 	});
 	</script>
