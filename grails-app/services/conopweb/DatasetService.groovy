@@ -10,7 +10,29 @@ class DatasetService {
 	}
 
     def find(Map params = [:]) {
-		collection.findAll([:]).collect { it.remove('_id'); it }
+		// figure out sort
+		def sort = [:]
+		if (params.sort) {
+			def s = params.remove('sort')
+			if (s.startsWith('-')) {
+				sort[s.substring(1)] = -1
+			} else {
+				sort[s] = 1
+			}
+		} else {
+			sort = ['created' : 1]
+		}
+
+		// figure out limit
+		int limit = 0
+		if (params.limit) {
+			limit = params.remove('limit') as int
+		}
+
+		def query = [:]
+		query.putAll(params)
+
+		collection.findAll(query).sort(sort).limit(limit).collect { it.remove('_id'); it }
     }
 
 	def get(String id) {

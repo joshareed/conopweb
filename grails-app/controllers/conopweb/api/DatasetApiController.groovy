@@ -6,6 +6,9 @@ class DatasetApiController {
 	def datasetService
 
 	def list() {
+		params.remove('controller')
+		params.remove('action')
+
 		render datasetService.find(params) as JSON
 	}
 
