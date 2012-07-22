@@ -23,21 +23,23 @@
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
+					<!--
 					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</a>
+					-->
 					<g:link uri="/" class="brand">CONOP.io</g:link>
+					<!--
 					<div class="nav-collapse">
 						<ul class="nav pull-right">
-							<!--
 							<li class="${!controllerName ? 'active' : ''}"><g:link uri="/">Home</g:link></li>
 							<li class="${controllerName == 'dataset' ? 'active' : ''}"><g:link controller="dataset">Datasets</g:link></li>
 							<li class="${controllerName == 'run' ? 'active' : ''}"><g:link controller="run">Runs</g:link></li>
-							-->
 						</ul>
 					</div>
+					-->
 				</div>
 			</div>
 		</div>
