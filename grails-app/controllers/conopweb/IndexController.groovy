@@ -5,8 +5,8 @@ class IndexController {
 
 	def index() {
 		[events: eventService.recent(),
-			datasets: datasetService.find(limit: 10),
-			runs: runService.find(sort: '-created', limit: 10),
-			active: runService.find(status: 'active', limit: 10)]
+			datasets: datasetService.find(limit: 10, sort: '-ts'),
+			runs: runService.find(limit: 10, sort: '-created'),
+			active: runService.find(status: 'active', limit: 10, sort: '-created')]
 	}
 }
