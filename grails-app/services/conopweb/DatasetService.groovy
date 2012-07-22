@@ -3,7 +3,7 @@ package conopweb
 class DatasetService {
 	static final String DATASETS = 'datasets'
 
-	def mongoService
+	def mongoService, eventService
 
 	protected getCollection() {
 		mongoService.getCollection(DATASETS, true)
@@ -63,6 +63,7 @@ class DatasetService {
 		def dataset = collection.add(id: params.id.toLowerCase(), name: params.name, url: params.url)
 		if (dataset) {
 			dataset.remove('_id')
+			eventService.datasetCreated(dataset)
 		}
 		dataset
 	}

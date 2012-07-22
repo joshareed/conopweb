@@ -5,18 +5,25 @@ import org.junit.*
 
 @TestFor(DatasetService)
 class DatasetServiceTests {
-	def mongoService
+	def mongoService, eventService
 
 	@Before
 	void setup() {
 		mongoService = new MongoService('localhost', 'conopweb_test')
+
+		eventService = new EventService()
+		eventService.mongoService = mongoService
+		eventService.collection.remove([:])
+
 		service.mongoService = mongoService
+		service.eventService = eventService
 		service.collection.remove([:])
 	}
 
 	@After
 	void teardown() {
 		service.collection.remove([:])
+		eventService.collection.remove([:])
 	}
 
 	void testFind() {
@@ -66,6 +73,8 @@ class DatasetServiceTests {
 		assert 'Test Dataset' == dataset.name
 		assert 'http://example.com' == dataset.url
 		assert 'test' == dataset.id
+
+		assert 1 == eventService.collection.findAll(type: 'datasetCreated').size()
 
 		thrown(RuntimeException, "Id 'test' already exists") {
 			service.create(id: 'test', name: 'Test Dataset', url: 'http://example.com')

@@ -5,18 +5,24 @@ import org.junit.*
 
 @TestFor(RunService)
 class RunServiceTests {
-	def mongoService, datasetService
+	def mongoService, datasetService, eventService
 
 	@Before
 	void setup() {
 		mongoService = new MongoService('localhost', 'conopweb_test')
 		service.mongoService = mongoService
 
+		eventService = new EventService()
+		eventService.mongoService = mongoService
+		eventService.collection.remove([:])
+
 		datasetService = new DatasetService()
 		datasetService.mongoService = mongoService
+		datasetService.eventService = eventService
 		datasetService.collection.remove([:])
 
 		service.datasetService = datasetService
+		service.eventService = eventService
 	}
 
 	@After
@@ -24,6 +30,7 @@ class RunServiceTests {
 		service.collection.remove([:])
 		service.progressCollection.remove([:])
 		datasetService.collection.remove([:])
+		eventService.collection.remove([:])
 	}
 
 	void testFind() {
@@ -88,6 +95,8 @@ class RunServiceTests {
 		assert [:] == run.simulation
 		assert 'new' == run.status
 		assert run.created
+
+		assert 1 == eventService.collection.findAll(type: 'runStarted').size()
 
 		thrown(RuntimeException, "Id 'test' already exists") {
 			service.create(id: 'test', name: 'Test Run', dataset: 'test-dataset', simulation: [:])
@@ -157,6 +166,14 @@ class RunServiceTests {
 		def run = service.get('test')
 		assert 'active' == run.status
 		assert 12345.67 == run.score
+
+		// don't create newBestScore events for the first run of a dataset
+		assert 0 == eventService.collection.findAll(type: 'newBestScore').size()
+
+		// create a second run
+		service.create(id: 'test2', name: 'Test Run', dataset: 'test-dataset', simulation: [:], score: (200000 as double))
+		service.createProgress('test2', [time: 1, temp: 10.5, score: 10000.00, iteration: 10000, objective: 'matrix'])
+		assert 1 == eventService.collection.findAll(type: 'newBestScore').size()
 	}
 
 	private thrown(clazz, msg, closure) {

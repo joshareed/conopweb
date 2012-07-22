@@ -9,8 +9,8 @@ class RunControllerTests {
 	@Before
 	void setup() {
 		controller.runService = [
-			find: { Map params -> ['run'] },
-			get: { def id -> id == 'test' ? 'test' : null }
+			find: { Map params -> [[id: 'test-dataset']] },
+			get: { def id -> id == 'test' ? [id: 'test', dataset: 'test-dataset'] : null }
 		] as RunService
 	}
 
@@ -33,7 +33,9 @@ class RunControllerTests {
 		assert 404 != response.status
 
 		assert out
-		assert 1 == out.size()
+		assert 3 == out.size()
 		assert out.containsKey('run')
+		assert out.containsKey('runCount')
+		assert out.containsKey('rank')
 	}
 }

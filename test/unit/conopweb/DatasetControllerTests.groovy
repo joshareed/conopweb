@@ -10,7 +10,7 @@ class DatasetControllerTests {
 	void setup() {
 		controller.datasetService = [
 			find: { Map params -> ['dataset'] },
-			get: { def id -> id == 'test' ? [id: 'test'] : null }
+			get: { def id -> id == 'test' ? [id: 'test', dataset: 'test-dataset'] : null }
 		] as DatasetService
 
 		controller.runService = [
@@ -37,9 +37,8 @@ class DatasetControllerTests {
 		assert 404 != response.status
 
 		assert out
-		assert 3 == out.size()
+		assert 2 == out.size()
 		assert out.containsKey('dataset')
-		assert out.containsKey('recent')
-		assert out.containsKey('best')
+		assert out.containsKey('runs')
 	}
 }

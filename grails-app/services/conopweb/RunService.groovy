@@ -4,7 +4,7 @@ class RunService {
 	static final String RUNS = 'runs'
 	static final String PROGRESS = 'progress'
 
-	def mongoService, datasetService
+	def mongoService, datasetService, eventService
 
 	protected getCollection() {
 		mongoService.getCollection(RUNS, true)
@@ -74,6 +74,7 @@ class RunService {
 		def run = collection.add(id: params.id.toLowerCase(), name: params.name, dataset: dataset.id, simulation: params.simulation, created: new Date(), status: 'new')
 		if (run) {
 			run.remove('_id')
+			eventService.runStarted(run)
 		}
 		run
 	}
@@ -117,7 +118,17 @@ class RunService {
 			collection.update([id: run.id], ['$set': [solution: params.solution]])
 		}
 
+		// check if new best score
+		isBest(run)
+
 		progress
+	}
+
+	private isBest(Map run) {
+		def best = collection.findAll(dataset: run.dataset, objective: run.objective).sort([score: 1]).limit(2).collect { it }
+		if (best && best.size() > 1 && best[0].id == run.id) {
+			eventService.newBestScore(run)
+		}
 	}
 
 	def getSolution(String id, Map params = [:]) {
@@ -142,5 +153,6 @@ class RunService {
 		} else {
 			collection.update([id: run.id], ['$set': [solution: null, status: 'aborted']])
 		}
+		eventService.runCompleted(run)
 	}
 }

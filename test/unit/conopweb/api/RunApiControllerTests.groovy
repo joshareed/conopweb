@@ -9,19 +9,25 @@ import grails.converters.JSON
 
 @TestFor(RunApiController)
 class RunApiControllerTests {
-	def mongoService, runService, datasetService
+	def mongoService, runService, datasetService, eventService
 
 	@Before
 	void setup() {
 		mongoService = new MongoService('localhost', 'conopweb_test')
 
+		eventService = new EventService()
+		eventService.mongoService = mongoService
+		eventService.collection.remove([:])
+
 		datasetService = new DatasetService()
 		datasetService.mongoService = mongoService
+		datasetService.eventService = eventService
 		datasetService.collection.remove([:])
 
 		runService = new RunService()
 		runService.mongoService = mongoService
 		runService.datasetService = datasetService
+		runService.eventService = eventService
 		runService.collection.remove([:])
 
 		controller.runService = runService
@@ -32,6 +38,7 @@ class RunApiControllerTests {
 		runService.collection.remove([:])
 		runService.progressCollection.remove([:])
 		datasetService.collection.remove([:])
+		eventService.collection.remove([:])
 	}
 
 	void testList() {

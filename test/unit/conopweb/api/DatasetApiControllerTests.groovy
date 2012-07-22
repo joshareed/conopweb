@@ -7,14 +7,19 @@ import org.junit.*
 
 @TestFor(DatasetApiController)
 class DatasetApiControllerTests {
-	def mongoService, datasetService
+	def mongoService, datasetService, eventService
 
 	@Before
 	void setup() {
 		mongoService = new MongoService('localhost', 'conopweb_test')
 
+		eventService = new EventService()
+		eventService.mongoService = mongoService
+		eventService.collection.remove([:])
+
 		datasetService = new DatasetService()
 		datasetService.mongoService = mongoService
+		datasetService.eventService = eventService
 		datasetService.collection.remove([:])
 
 		controller.datasetService = datasetService
@@ -23,6 +28,7 @@ class DatasetApiControllerTests {
 	@After
 	void teardown() {
 		datasetService.collection.remove([:])
+		eventService.collection.remove([:])
 	}
 
 	void testList() {
