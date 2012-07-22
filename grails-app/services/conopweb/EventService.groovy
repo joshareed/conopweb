@@ -10,25 +10,25 @@ class EventService {
 	}
 
 	def runStarted(Map run) {
-		def event = collection.add(type: 'runStarted', run: run.id, dataset: run.dataset, ts: new Date())
+		def event = collection.add(type: 'runStarted', run: run.id, dataset: run.dataset, ts: System.currentTimeMillis())
 		event.remove('_id')
 		event
 	}
 
 	def runCompleted(Map run) {
-		def event = collection.add(type: 'runCompleted', run: run.id, dataset: run.dataset, score: run.score, time: run.time, ts: new Date())
+		def event = collection.add(type: 'runCompleted', run: run.id, dataset: run.dataset, score: run.score, time: run.time, ts: System.currentTimeMillis())
 		event.remove('_id')
 		event
 	}
 
 	def datasetCreated(Map dataset) {
-		def event = collection.add(type: 'datasetCreated', dataset: dataset.id, ts: new Date())
+		def event = collection.add(type: 'datasetCreated', dataset: dataset.id, ts: System.currentTimeMillis())
 		event.remove('_id')
 		event
 	}
 
 	def newBestScore(Map run) {
-		def event = collection.add(type: 'newBestScore', run: run.id, dataset: run.dataset, score: run.score, ts: new Date())
+		def event = collection.add(type: 'newBestScore', run: run.id, dataset: run.dataset, score: run.score, ts: System.currentTimeMillis())
 		event.remove('_id')
 		event
 	}

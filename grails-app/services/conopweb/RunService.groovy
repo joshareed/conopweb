@@ -71,7 +71,7 @@ class RunService {
 		}
 
 		// create the run
-		def run = collection.add(id: params.id.toLowerCase(), name: params.name, dataset: dataset.id, simulation: params.simulation, created: new Date(), status: 'new')
+		def run = collection.add(id: params.id.toLowerCase(), name: params.name, dataset: dataset.id, simulation: params.simulation, created: System.currentTimeMillis(), status: 'new')
 		if (run) {
 			run.remove('_id')
 			eventService.runStarted(run)
