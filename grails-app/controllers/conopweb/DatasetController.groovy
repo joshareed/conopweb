@@ -6,7 +6,7 @@ class DatasetController {
 	def datasetService, runService
 
     def list() {
-		[datasets: datasetService.find(params)]
+		[datasets: datasetService.find([:])]
 	}
 
 	def show(String id) {
