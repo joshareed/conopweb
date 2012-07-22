@@ -6,6 +6,9 @@ class RunApiController {
 	def runService
 
 	def list() {
+		params.remove('controller')
+		params.remove('action')
+
 		render runService.find(params) as JSON
 	}
 
