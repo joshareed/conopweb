@@ -4,16 +4,16 @@
 		<meta name="layout" content="main"/>
 		<title>CONOP.io</title>
 		<style type="text/css" media="screen">
-			li {
+			.row li {
 				margin-left: -20px;
 				padding: 5px 0 5px 0;
 				height: 20px;
 				list-style-type: none;
 			}
-			li a {
+			.row li a {
 				padding-top: 5px;
 			}
-			li .label {
+			.row li .label {
 				margin-right: 7px;
 				margin-top: -5px;
 				display: inline-block;
@@ -29,6 +29,11 @@
 			.event .label {
 				margin-top: -5px;
 				display: inline-block;
+			}
+			.timestamp {
+				float: right;
+				font-style: italic;
+				color: #999;
 			}
 		</style>
 	</head>
